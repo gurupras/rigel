@@ -122,7 +122,13 @@ class Spotify:
 	
 	def get_user_tracks(self, user):
 		url = urlparse.urljoin(self.USER_BASE_URL, '%s/tracks' % (user))
-		return self.make_get_request(url)
+		result = []
+		req = self.make_get_request(url)
+		while req['next']:
+			result.append(req)
+			req = self.make_get_request(req['next'])
+		result.append(req)
+		return {"tracks" : result}
 
 
 class User(dict):
