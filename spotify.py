@@ -88,7 +88,6 @@ class Spotify:
 			if dict(r.json()).get(self.REFRESH_TOKEN_STRING, None):
 				self.update_tokens(r.json())
 				self.dump_tokens()
-		print 'Authentication successful!'
 
 
 	def get_token_request_headers(self):
@@ -106,7 +105,6 @@ class Spotify:
 	def make_get_request(self, url):
 		headers = self.get_request_headers()
 		r = requests.get(url, headers=headers)
-		print 'url: %s' % (url)
 		if r.status_code is not requests.codes.ok:
 			print r.json()
 			raise Exception('Failed to make get_request')
