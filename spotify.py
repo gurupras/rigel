@@ -3,11 +3,13 @@ import requests, json
 import urlparse
 import base64
 
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+
 class AuthenticationException(Exception):
 	pass
 
 class Spotify:
-	TOKENS_FILE='.tokens'
+	TOKENS_FILE=os.path.join(_base_dir, '.tokens')
 	redirect_uri = 'http://localhost:8888'
 
 	REFRESH_TOKEN_STRING = 'refresh_token'
