@@ -2,6 +2,9 @@ import os
 import requests, json
 import urlparse
 import base64
+import logging
+
+logger = logging.getLogger('spotify')
 
 _base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,7 +40,7 @@ class Spotify:
 		if not r.status_code == requests.codes.ok:
 			raise AuthenticationException('Failed to obtain authorization code')
 
-		print 'Open: %s' % (r.url)
+		logger.debug('Open: %s' % (r.url))
 		query_str = urlparse.urlparse(raw_input('Enter url:'))[4]
 		code = urlparse.parse_qs(query_str)['code'][0]
 
@@ -84,7 +87,7 @@ class Spotify:
 			r = requests.post(self.TOKEN_URL, data=params, headers=headers)
 
 			if not r.status_code == requests.codes.ok:
-				print r.json()
+				logger.critical(r.json())
 				raise AuthenticationException('Failed to obtain refresh token')
 			self.update_tokens(r.json())
 			if dict(r.json()).get(self.REFRESH_TOKEN_STRING, None):
@@ -108,7 +111,7 @@ class Spotify:
 		headers = self.get_request_headers()
 		r = requests.get(url, headers=headers)
 		if r.status_code is not requests.codes.ok:
-			print r.json()
+			logger.critical(r.json())
 			raise Exception('Failed to make get_request')
 		return r.json()
 
