@@ -119,19 +119,35 @@ class Spotify:
 		result = self.make_get_request(self.SELF_URL)
 		return User(result)
 
-	def get_user_playlists(self, user):
+	def get_user_playlists(self, user=None):
+		if not user:
+			user = self.whoami()
 		url = urlparse.urljoin(self.USER_BASE_URL, '%s/playlists' % (user))
-		return self.make_get_request(url)
+		return self.return_generator(url)
 	
-	def get_user_tracks(self, user):
+	def get_user_tracks(self, user=None):
+		if not user:
+			user = self.whoami()
 		url = urlparse.urljoin(self.USER_BASE_URL, '%s/tracks' % (user))
-		result = []
-		req = self.make_get_request(url)
+		return self.return_generator(url)
+
+	def get_user_playlist_tracks(self, user=None, playlist=None):
+		if not user:
+			user = self.whoami()
+		for result in self.get_user_playlists(user):
+			for plist in result['items']:
+				if playlist and plist['name'] != playlist:
+					continue
+				tracks_url = plist['tracks']['href']
+				for track_list in self.return_generator(tracks_url):
+					yield track_list
+
+
+	def return_generator(self, url):
+		req = {'next':url}
 		while req['next']:
-			result.append(req)
 			req = self.make_get_request(req['next'])
-		result.append(req)
-		return {"tracks" : result}
+			yield req
 
 
 class User(dict):
