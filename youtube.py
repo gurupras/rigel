@@ -5,7 +5,6 @@ import json
 import logging
 import requests,urllib2,urllib
 import time
-import unicodedata
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 
@@ -26,7 +25,7 @@ class YoutubeInMp3Exception(Exception):
 # tab of
 #	 https://cloud.google.com/console
 # Please ensure that you have enabled the YouTube Data API for your project.
-DEVELOPER_KEY = "AIzaSyAH3auSKLjRE2jJbN4b6MYG4uwlIb2jGQk"
+DEVELOPER_KEY = ""
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -51,7 +50,7 @@ def youtube_search(options):
 
 	# Add each result to the appropriate list, and then display the lists of
 	# matching videos, channels, and playlists.
-	owner_whitelist = ['vevo', 'records', 'sony']
+	owner_whitelist = ['vevo', 'sony']
 	keyword_blacklist = ['full album', 'album']
 
 	for search_result in search_response.get("items", []):
@@ -79,7 +78,7 @@ def youtube_search(options):
 					videos.append(search_result)
 
 	for v in videos:
-		logger.debug(json.dumps(v, indent=4))	
+		logger.debug(json.dumps(v, indent=4))
 	return videos
 
 def create_youtube_url(id):
@@ -109,7 +108,7 @@ def main(argv):
 
 	try:
 		results = youtube_search(args)
-		if len(results) < 1: 
+		if len(results) < 1:
 			raise NoSearchResultException("Did not find any results for query string '%s %s'" % (args.artist, args.track))
 		result = results[0]
 		url = create_youtube_url(result['id']['videoId'])

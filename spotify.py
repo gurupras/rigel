@@ -124,7 +124,7 @@ class Spotify:
 			user = self.whoami()
 		url = urlparse.urljoin(self.USER_BASE_URL, '%s/playlists' % (user))
 		return self.return_generator(url)
-	
+
 	def get_user_tracks(self, user=None):
 		if not user:
 			user = self.whoami()
@@ -154,7 +154,7 @@ class User(dict):
 
 	def __init__(self, json_data):
 		super(User, self).__init__(json_data)
-	
+
 	def __repr__(self):
 		return self.get('id', None)
 

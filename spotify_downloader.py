@@ -1,15 +1,49 @@
 import os,sys,argparse
 import json
 import shlex
-import logging
-import unicodedata
-import subprocess
 
-logging.basicConfig(level=logging.INFO)
+from unidecode import unidecode
+
+import logging
+from pycommons import generic_logging
+generic_logging.init(level=logging.INFO)
 logger = logging.getLogger('spotify_downloader')
 
 import youtube
 from spotify import Spotify
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+CONFIG_FILE = '.config'
+CONFIG_FILE_PATH = os.path.join(BASE_DIR, CONFIG_FILE)
+
+CONFIG_KEYS = [
+	'TOKENS_FILE',
+	'DEVELOPER_KEY',
+]
+
+def create_config_file():
+	d = {}
+	for entry in CONFIG_KEYS:
+		d[entry] = ''
+
+	with open(CONFIG_FILE_PATH, 'wb') as f:
+		f.write(json.dumps(d, indent=4))
+
+if not os.path.exists(CONFIG_FILE_PATH):
+	logger.critical("File '%s' does not exist! Creating template ... " \
+			"Please update template with values")
+	create_config_file()
+	sys.exit(-1)
+else:
+	d = None
+	with open(CONFIG_FILE_PATH, 'rb') as f:
+		d = json.loads(f.read())
+	for key in CONFIG_KEYS:
+		assert d.get(key, None), "Key '%s' does not exist in config file" % (key)
+
+	# Now set the variables
+	Spotify.TOKENS_FILE = d['TOKENS_FILE']
+	youtube.DEVELOPER_KEY = d['DEVELOPER_KEY']
 
 def setup_parser():
 	parser = argparse.ArgumentParser()
@@ -17,7 +51,7 @@ def setup_parser():
 	return parser
 
 def to_ascii(string):
-	return unicodedata.normalize('NFD', string.decode('utf-8')).encode('ascii', 'ignore')
+	return unidecode(string)
 
 def main(argv):
 	parser = setup_parser()
@@ -59,7 +93,7 @@ def main(argv):
 				logger.warn('SKIP/%s - %s', name, e)
 			except Exception, e:
 				logger.critical('FAIL/%s - %s', name, e)
-			
+
 
 if __name__ == '__main__':
 	main(sys.argv)
