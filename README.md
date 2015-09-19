@@ -17,7 +17,7 @@ Add your client key and client secret to `.tokens` in JSON format
 
 Now, head over to [Google](https://console.developers.google.com/) and create credentials for API access of type Browser.
 
-Now run `python spotify_downloader.py` which should generate a `.config` file.  
+Run `python spotify_downloader.py` which should generate a `.config` file.  
 Fill in the developer key you just created in this file.
 
-Now, go ahead and run `python spotify_downloader.py` to download songs in your Spotify's 'Your Music'
+Go ahead and run `python spotify_downloader.py` to download songs in your Spotify's 'Your Music'
