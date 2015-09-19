@@ -22,9 +22,10 @@ CONFIG_KEYS = [
 ]
 
 def create_config_file():
-	d = {}
+	d = {'TOKENS_FILE' : '.tokens'}
 	for entry in CONFIG_KEYS:
-		d[entry] = ''
+		if d.get(entry, None) is None:
+			d[entry] = ''
 
 	with open(CONFIG_FILE_PATH, 'wb') as f:
 		f.write(json.dumps(d, indent=4))
