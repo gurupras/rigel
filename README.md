@@ -4,14 +4,14 @@ With tubeify you can access your Spotify playlist and use the information to dow
 
 # Installation
 Setup virtualenv if necessary:  
-    `virtualenv env`  
+    `virtualenv env --no-site-packages`  
     `source env/bin/activate`
     
 Run pip:  
     `pip install -r requirements.txt`
 
 Currently, there is no server to bounce authorization off of and so, you are required to get a client id and secret from Spotify.
-Go to [Spotify](developers.spotify.com) and enable developer API
+Go to [Spotify](https://developers.spotify.com) and enable developer API
 Add your client key and client secret to `.tokens` in JSON format  
 `{"client_id": "", "client_secret": ""}`
 
