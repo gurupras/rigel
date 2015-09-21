@@ -1,6 +1,6 @@
-# tubeify
+# rigel
 Ever been frustrated with Spotify not allowing you to play the songs you want on your smartphone?
-With tubeify you can access your Spotify playlist and use the information to download the tracks via Youtube.
+With rigel you can access your Spotify playlist and use the information to download the tracks via Youtube.
 
 # Installation
 Setup virtualenv if necessary:  
