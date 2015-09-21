@@ -5,8 +5,13 @@ import shlex
 from unidecode import unidecode
 
 import logging
-from pycommons import generic_logging
-generic_logging.init(level=logging.INFO)
+try:
+	from pycommons import generic_logging
+	generic_logging.init(level=logging.INFO)
+except:
+	print 'No pycommons. Using normal logging'
+	import logging
+	logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('spotify_downloader')
 
 import youtube
@@ -32,7 +37,7 @@ def create_config_file():
 
 if not os.path.exists(CONFIG_FILE_PATH):
 	logger.critical("File '%s' does not exist! Creating template ... " \
-			"Please update template with values")
+			"Please update template with values" % (CONFIG_FILE_PATH))
 	create_config_file()
 	sys.exit(-1)
 else:
