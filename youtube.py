@@ -10,6 +10,8 @@ from apiclient.errors import HttpError
 
 import subprocess
 
+from pycommons import generic_logging
+generic_logging.init(level=logging.DEBUG)
 logger = logging.getLogger('youtube')
 
 class FileExistsException(Exception):
@@ -28,6 +30,11 @@ class YoutubeInMp3Exception(Exception):
 DEVELOPER_KEY = ""
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
+
+import common
+
+d = common.get_config()
+DEVELOPER_KEY = d['DEVELOPER_KEY']
 
 def youtube_search(options):
 	youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
