@@ -91,10 +91,12 @@ def youtube_search(options):
 def create_youtube_url(id):
 	return 'http://www.youtube.com/watch?v=%s' % (id)
 
-def download(youtube_url, out):
+def download(youtube_url, out, mp3):
 	base_dir = os.path.abspath(os.path.dirname(__file__))
 	youtube_dl = os.path.join(base_dir, 'youtube-dl')
-	cmd = '%s %s -x -o "%s" --audio-format "mp3"' % (youtube_dl, youtube_url, out)
+	cmd = '%s %s -o "%s"' % (youtube_dl, youtube_url, out)
+	if mp3:
+		cmd += ' -x --audio-format "mp3"'
 	logger.info(cmd)
 	if os.path.exists(out):
 		raise FileExistsException('File Exists!')
@@ -107,11 +109,18 @@ def setup_parser():
 	parser.add_argument("--track", help="Search term", default="Blank Space")
 	parser.add_argument("--out", help="Output file", default='Blank Space - Taylor Swift.mp3')
 	parser.add_argument("--max-results", help="Max results", default=5)
+	parser.add_argument('--download', help='Download url', default=None)
+	parser.add_argument('--mp3', action='store_true', default=False,
+			help='Download as MP3')
 	return parser
 
 def main(argv):
 	parser = setup_parser()
 	args = parser.parse_args(argv[1:])
+
+	if args.download:
+		download(args.download, args.out, args.mp3)
+		return
 
 	try:
 		results = youtube_search(args)
@@ -119,7 +128,7 @@ def main(argv):
 			raise NoSearchResultException("Did not find any results for query string '%s %s'" % (args.artist, args.track))
 		result = results[0]
 		url = create_youtube_url(result['id']['videoId'])
-		download(url, args.out)
+		download(url, args.out, mp3=True)
 	except HttpError, e:
 		print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
 
