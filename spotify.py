@@ -1,6 +1,7 @@
 import os
 import requests, json
 import urlparse
+import urllib
 import base64
 import logging
 
@@ -22,6 +23,9 @@ class Spotify:
 	TOKEN_URL = 'https://accounts.spotify.com/api/token'
 	SELF_URL  = 'https://api.spotify.com/v1/me'
 	USER_BASE_URL  = 'https://api.spotify.com/v1/users/'
+	AUDIO_ANALYSIS_URL = 'https://api.spotify.com/v1/audio-analysis/'
+	AUDIO_FEATURES_URL = 'https://api.spotify.com/v1/audio-features/'
+	SEARCH_URL = 'https://api.spotify.com/v1/search'
 
 	def __init__(self):
 		assert os.path.exists(Spotify.TOKENS_FILE), 'Please create .tokens file with client_id and client_secret keys'
@@ -40,7 +44,7 @@ class Spotify:
 		if not r.status_code == requests.codes.ok:
 			raise AuthenticationException('Failed to obtain authorization code')
 
-		logger.debug('Open: %s' % (r.url))
+		logger.info('Open: %s' % (r.url))
 		query_str = urlparse.urlparse(raw_input('Enter url:'))[4]
 		code = urlparse.parse_qs(query_str)['code'][0]
 
@@ -107,9 +111,9 @@ class Spotify:
 		}
 		return headers
 
-	def make_get_request(self, url):
+	def make_get_request(self, url, payload={}):
 		headers = self.get_request_headers()
-		r = requests.get(url, headers=headers)
+		r = requests.get(url, headers=headers, params=payload)
 		if r.status_code is not requests.codes.ok:
 			logger.critical(r.json())
 			raise Exception('Failed to make get_request')
@@ -141,6 +145,20 @@ class Spotify:
 				tracks_url = plist['tracks']['href']
 				for track_list in self.return_generator(tracks_url):
 					yield track_list
+
+	def search(self, parameters):
+		url = self.SEARCH_URL
+		return self.make_get_request(url, parameters)
+
+	def audio_analysis(self, trackid):
+		url = urlparse.urljoin(self.AUDIO_ANALYSIS_URL, trackid)
+		return self.make_get_request(url)
+
+	def audio_features(self, trackid):
+		url = urlparse.urljoin(self.AUDIO_FEATURES_URL, trackid)
+		return self.make_get_request(url)
+
+
 
 
 	def return_generator(self, url):
