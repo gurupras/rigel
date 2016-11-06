@@ -1,6 +1,9 @@
 import os,sys,argparse
 import json
 
+import logging
+logger = logging.getLogger(__file__)
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 CONFIG_FILE = '.config'
 CONFIG_FILE_PATH = os.path.join(BASE_DIR, CONFIG_FILE)
