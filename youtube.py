@@ -47,7 +47,8 @@ def youtube_search(options):
 			q=options.artist + ' ' + options.track,
 			part="id,snippet",
 			order='viewCount',
-			maxResults=options.max_results
+			maxResults=options.max_results,
+			referrer='twoseven.xyz/us'
 		).execute()
 	except Exception, e:
 		logger.critical('Failed to perform youtube search: %s' % (e))
